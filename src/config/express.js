@@ -11,6 +11,8 @@ const express = () => {
         })
     )
 
+    app.use(e.json())
+
     app.get("/health", (req, res) => {
         res.status(200).json({ status: "ok" })
     })

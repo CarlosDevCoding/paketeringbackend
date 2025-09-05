@@ -25,17 +25,20 @@ const gameService = {
         return newGame
     },
     createMove: async (gameId, player, moveIndex) => {
-        const game = await Game.find({ _id: gameId })
+        const game = await Game.findOne({ _id: gameId })
 
         if (!game) {
             throw "Game not found."
         }
 
-        const playerMoves = game.field.find((tile) => tile === player)
-        const otherPlayerMoves = game.field.find((tile) => tile !== player && tile !== null)
+        const playerMoves = game.field.filter((tile) => tile === player)
+        const otherPlayerMoves = game.field.filter((tile) => tile !== player && tile !== null)
+
+        console.log("mina" + otherPlayerMoves.length)
+        console.log("other" + playerMoves.length)
 
         //check if user is not doubling moves
-        if (playerMoves > otherPlayerMoves) {
+        if (playerMoves.length > otherPlayerMoves.length) {
             throw "It's not your turn yet."
         }
 

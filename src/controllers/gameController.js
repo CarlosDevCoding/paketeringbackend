@@ -1,6 +1,48 @@
 import Game from "../models/Game.js"
 
-const gameService = {
+function checkWin(field, moveIndex, player) {
+    const size = 15
+
+    const row = Math.floor(moveIndex / size)
+    const col = moveIndex % size
+
+    const directions = [
+        [0, 1], // horizontal
+        [1, 0], // vertical
+        [1, 1], // diagonal down-right
+        [-1, 1] // diagonal up-right
+    ]
+
+    for (const [dr, dc] of directions) {
+        let count = 1
+
+        // check forward
+        let r = row + dr,
+            c = col + dc
+        while (r >= 0 && r < size && c >= 0 && c < size && field[r * size + c] === player) {
+            count++
+            r += dr
+            c += dc
+        }
+
+        // check backward
+        r = row - dr
+        c = col - dc
+        while (r >= 0 && r < size && c >= 0 && c < size && field[r * size + c] === player) {
+            count++
+            r -= dr
+            c -= dc
+        }
+
+        if (count >= 5) {
+            return true
+        }
+    }
+
+    return false
+}
+
+const gameController = {
     getGame: async (id) => {
         const game = await Game.findOne({ _id: id })
 
@@ -31,11 +73,12 @@ const gameService = {
             throw "Game not found."
         }
 
+        if (game.winner) {
+            return game
+        }
+
         const playerMoves = game.field.filter((tile) => tile === player)
         const otherPlayerMoves = game.field.filter((tile) => tile !== player && tile !== null)
-
-        console.log("mina" + otherPlayerMoves.length)
-        console.log("other" + playerMoves.length)
 
         //check if user is not doubling moves
         if (playerMoves.length > otherPlayerMoves.length) {
@@ -49,10 +92,14 @@ const gameService = {
 
         game.field[moveIndex] = player
 
+        if (checkWin(game.field, moveIndex, player)) {
+            game.winner = player
+        }
+
         await game.save()
 
         return game
     }
 }
 
-export default gameService
+export default gameController

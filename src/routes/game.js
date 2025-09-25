@@ -1,11 +1,11 @@
 import { Router } from "express"
-import gameService from "../services/gameService.js"
+import gameController from "../controllers/gameController.js"
 
 const game = new Router()
 
 game.post("/create", async (req, res) => {
     try {
-        const game = await gameService.createGame()
+        const game = await gameController.createGame()
         res.send(game)
     } catch (e) {
         console.log(e)
@@ -16,7 +16,7 @@ game.post("/create", async (req, res) => {
 game.post("/move", async (req, res) => {
     try {
         const { gameId, player, moveIndex } = req.body
-        const move = await gameService.createMove(gameId, player, moveIndex)
+        const move = await gameController.createMove(gameId, player, moveIndex)
         res.send(move)
     } catch (e) {
         console.log(e)
@@ -26,7 +26,7 @@ game.post("/move", async (req, res) => {
 
 game.get("/:id", async (req, res) => {
     const id = req.params.id
-    const game = await gameService.getGame(id)
+    const game = await gameController.getGame(id)
     res.send(game)
 })
 

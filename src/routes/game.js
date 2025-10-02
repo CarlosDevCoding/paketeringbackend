@@ -2,7 +2,7 @@ import { Router } from "express"
 import gameController from "../controllers/gameController.js"
 
 const game = new Router()
-/* test */
+/* test2222 */
 game.post("/create", async (req, res) => {
     try {
         const game = await gameController.createGame()
